@@ -14,14 +14,18 @@ public final class EmojipediaURLBuilder {
     private static final Map<String, String> EMOJI_LIST;
 
     public static String createURL(String unicode, final EmojiCollection collection, final EmojiSize size) {
+        return createURL(unicode, collection.getIdentity(), collection.getId(), size.getSize());
+    }
+
+    public static String createURL(String unicode, final String customCollectionName, final int customCollectionId, int customSize){
         final var description = EMOJI_LIST.get(unicode.toUpperCase());
         if (description != null){
             return String.format(EMOJIPEDIA_CDN,
-                                        size.getSize(),
-                                            collection.getIdentity(),
-                                                collection.getId(),
-                                                    description,
-                                                        unicode.toLowerCase());
+                    customSize,
+                    customCollectionName,
+                    customCollectionId,
+                    description,
+                    unicode.toLowerCase());
         }
         return null;
     }

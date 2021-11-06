@@ -17,25 +17,39 @@ import static dev.mainardes.util.emojicache.util.EmojipediaURLBuilder.createURL;
 
 public class EmojiCreator implements EntryCreator<String, Image> {
 
-    private EmojiCollection collection;
-    private EmojiSize size;
+    private String collection;
+    private int collectionId, size;
 
     public EmojiCreator(EmojiCollection collection, EmojiSize size){
+        this(collection.getIdentity(), collection.getId(), size.getSize());
+    }
+
+    public EmojiCreator(String collection, int collectionId, int size){
         this.collection = collection;
+        this.collectionId = collectionId;
+        this.size = size;
+    }
+
+    public void setCollection(final String collection, final int collectionId){
+        this.collection = collection;
+        this.collectionId = collectionId;
+    }
+
+    public void setSize(final int size){
         this.size = size;
     }
 
     public void setCollection(EmojiCollection collection) {
-        this.collection = collection;
+        setCollection(collection.getIdentity(), collection.getId());
     }
 
     public void setSize(EmojiSize size) {
-        this.size = size;
+        setSize(size.getSize());
     }
 
     @Override
     public Image create(String unicode, OutputStream outputStream) {
-        var url = createURL(unicode, collection, size);
+        var url = createURL(unicode, collection, collectionId, size);
         if (url != null){
             try (var input = new URL(url).openStream(); outputStream){
                 var image = ImageIO.read(input);
@@ -60,7 +74,7 @@ public class EmojiCreator implements EntryCreator<String, Image> {
 
     @Override
     public String name(String unicode) {
-        return collection.getIdentity().toLowerCase() + "-" + unicode.toLowerCase() + "-" + size.getSize();
+        return collection.toLowerCase() + "-" + unicode.toLowerCase() + "-" + size;
     }
 
     @Override
